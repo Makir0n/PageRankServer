@@ -47,9 +47,9 @@ public class AnalyzeHTML {
         int index = pageTitle.indexOf(" - Wikipedia");
         pageTitle = new String(pageTitle.substring(0, index));
         //pageTitle = "存命人物";
-        System.out.println(pageTitle);
+        //System.out.println(pageTitle);
 
-        String jdbc_url = "jdbc:mysql://localhost/LINEtest";
+        String jdbc_url = "jdbc:mysql://localhost/LINEpage";
         String user = "root";
         String password = "@xes";
         ResultSet rsLink;
@@ -70,16 +70,23 @@ public class AnalyzeHTML {
             while (rsLink.next()) {
                 s = new String(rsLink.getBytes("page_title"), "UTF-8");
                 linkDB.add(s);
-                //System.out.println(s);
+                //System.out.println(s.);
             }
+            System.out.println("DB"+linkDB.size());
+            System.out.println("Title"+linkTitle.size());
             //両方の配列にあったリンク先の名前の配列をつくる
-            for (int i = 0, j = 0; i < linkDB.size(); i++) {
-                if (linkDB.indexOf(linkTitle.get(i)) != -1) {
-                    linkTitle.set(j, linkDB.get(i));
+            ArrayList<String> link = new ArrayList();
+            int j,i;
+            for (i = 0, j = 0; i < linkDB.size(); i++) {
+                if (linkTitle.indexOf(linkDB.get(i)) != -1) {//linkDBとlinkTitle
+                    link.add(linkDB.get(i));
                     j++;
                 }
             }
-            //System.out.println(linkTitle);
+            System.out.println(j);
+            System.out.println("link"+link.size());
+            System.out.println(link);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -116,13 +123,12 @@ public class AnalyzeHTML {
 
         while (link_matcher.find()) {
             linkTitle.add(link_matcher.group(1).replaceAll("\\s", ""));
-            System.out.println(link_matcher.group(1).replaceAll("\\s", ""));
         }
 
         String pageTitle = null;
         if (title_matcher.find()) {
             pageTitle = title_matcher.group(1);
-            System.out.println(pageTitle);
+            //System.out.println(pageTitle);
         }
         return pageTitle;
     }
