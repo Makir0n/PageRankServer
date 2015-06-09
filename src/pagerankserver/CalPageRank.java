@@ -10,9 +10,6 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 /**
  *
  * @author makir0n
@@ -25,7 +22,7 @@ public class CalPageRank {
         ArrayList<Integer> tosID = new ArrayList<Integer>();
         ArrayList<Integer> fromsID = new ArrayList<Integer>();
 
-        String jdbc_url = "jdbc:mysql://localhost/LINEtest";
+        String jdbc_url = "jdbc:mysql://localhost/LINEpage";
         String user = "root";
         String password = "@xes";
         ResultSet rsLink;
@@ -73,43 +70,19 @@ public class CalPageRank {
         //indexがiのところにidとscore入れるもうこれ直接ＤＢでよくね？
         
          for (int i = 0; i < transIndexId.size(); i++) {
-         //page.add(transIndexId.get(i), scores.get(i));
          page.add(i, new Page(transIndexId.get(i), scores.get(i)));
          }
-        //一致するidのところにscore入れてくんだけど
-        //めっちゃデータベースにアクセスするじゃん．．．
-        /*
-         for (int i = 0; i < transIndexId.size(); i++) {
-         //index番号をtotalのindexに指定すると中身のidが
-         int transID = transIndexId.get(pageScore.get(i).getPageIndex());
-         pageScoreID.get(i).setPageId(transID);
-         }
-         */
-        //あとでこれをデータベースに
-        /*
-         for (int i = 0; i < page.size(); i++) {
-         //for (int i = 0; i < pageScore.size(); i++) {
-         //int index = pageScore.get(i).getIndex();
-         //pageScoreID.add(transIndexId.indexOf(pageScore.get(i)));
-         System.out.print(page.get(i).getId());
-         System.out.println("score:" + page.get(i).getScore());
-         }
-         */
         try (Connection con = DriverManager.getConnection(jdbc_url, user, password);
                 Statement stmt = con.createStatement()) {
-
-            //stmt.executeUpdate("ALTER TABLE page ADD pagerank double;");
             for (int i = 0; i < page.size(); i++) {
-                //System.out.println(page.get(i).getId());
                 stmt.executeUpdate("UPDATE page SET score = " + page.get(i).getScore() + "WHERE page_id = " + page.get(i).getId() + ";");
 
             }
-
-            
+            /*
             rsLink = stmt.executeQuery("SELECT * FROM page LIMIT 10;");
             while (rsLink.next()) {
                 System.out.println("     " + rsLink.getString(3));
-            }
+            }*/
                     
 
             //close the statement and connection

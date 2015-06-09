@@ -23,7 +23,7 @@ public class PageRankServer {
     public static void main(String[] args) {
         // TODO code application logic here
 
-        //CalPageRank pr = new CalPageRank();
+        CalPageRank pr = new CalPageRank();
         try (ServerSocket server = new ServerSocket(8001);) {
             System.out.println("クライアントからの接続を待ち");
             Socket socket = server.accept();
@@ -33,11 +33,7 @@ public class PageRankServer {
             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
             String url;
             if ((url = in.readLine()) != null) {
-                //System.out.println("受信: " + uel);
             }
-            
-            //out.println(line);
-            //System.out.println("送信: " + line);
             AnalyzeHTML analyzehtml = new AnalyzeHTML(url);
             // クライアントは、終了のマークとして0を送付してくる
             /*while ((ch = input.read()) != 0) {

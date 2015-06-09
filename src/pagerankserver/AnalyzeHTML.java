@@ -14,13 +14,10 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import javax.swing.JTextField;
 
 /**
  *
@@ -29,15 +26,12 @@ import javax.swing.JTextField;
 public class AnalyzeHTML {
 
     static ArrayList<String> linkTitle = new ArrayList();
-    static ArrayList<String> linkDB = new ArrayList();
+    static ArrayList<String> link = new ArrayList();
 
-    //static ArrayList<Integer> tosID = new ArrayList<Integer>();
-    //static ArrayList<Integer> fromsID = new ArrayList<Integer>();
     int fromID;
 
     AnalyzeHTML(String url) {
 
-        //System.out.println(url);
         String pageTitle = null;
         try {
             pageTitle = getTitle(url);
@@ -46,8 +40,6 @@ public class AnalyzeHTML {
         }
         int index = pageTitle.indexOf(" - Wikipedia");
         pageTitle = new String(pageTitle.substring(0, index));
-        //pageTitle = "存命人物";
-        //System.out.println(pageTitle);
 
         String jdbc_url = "jdbc:mysql://localhost/LINEpage";
         String user = "root";
@@ -65,6 +57,7 @@ public class AnalyzeHTML {
             while (rsLink.next()) {
                 fromID = rsLink.getInt("page_id");
             }
+            ArrayList<String> linkDB = new ArrayList();
             s = "SELECT * FROM page INNER JOIN pagelinks ON page.page_title = pagelinks.pl_title where pagelinks.pl_from = " + fromID + ";";
             rsLink = stmt.executeQuery(s);
             while (rsLink.next()) {
@@ -72,20 +65,15 @@ public class AnalyzeHTML {
                 linkDB.add(s);
                 //System.out.println(s.);
             }
-            System.out.println("DB"+linkDB.size());
-            System.out.println("Title"+linkTitle.size());
+
             //両方の配列にあったリンク先の名前の配列をつくる
-            ArrayList<String> link = new ArrayList();
-            int j,i;
-            for (i = 0, j = 0; i < linkDB.size(); i++) {
+            for (int i = 0, j = 0; i < linkDB.size(); i++) {
                 if (linkTitle.indexOf(linkDB.get(i)) != -1) {//linkDBとlinkTitle
                     link.add(linkDB.get(i));
                     j++;
                 }
             }
-            System.out.println(j);
-            System.out.println("link"+link.size());
-            System.out.println(link);
+
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -94,7 +82,7 @@ public class AnalyzeHTML {
     }
 
     ArrayList<String> getLinkPageId() {
-        return linkTitle;
+        return link;
     }
 
     public static String getTitle(String page_url) throws Exception {
@@ -124,11 +112,9 @@ public class AnalyzeHTML {
         while (link_matcher.find()) {
             linkTitle.add(link_matcher.group(1).replaceAll("\\s", ""));
         }
-
         String pageTitle = null;
         if (title_matcher.find()) {
             pageTitle = title_matcher.group(1);
-            //System.out.println(pageTitle);
         }
         return pageTitle;
     }
