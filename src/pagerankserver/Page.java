@@ -11,33 +11,41 @@ package pagerankserver;
  */
 class Page {
 
-    private int index;
-    private double value;
+    //private int index;
+    private double score;
     private int id;
 
-    Page(int n, double v) {
-        index = n;
-        value = v;
+    
+    Page(int i, double s) {
+        id = i;
+        score = s;
+    }
+    
+
+    public double getScore() {
+        return score;
     }
 
-    public double getValue() {
-        return value;
-    }
-
+    /*
     public int getPageIndex() {
         return index;
     }
-    
-    public void setPageId(int id){
-         this.id = id;
-    }
+    */
     
     public int getId(){
         return id;
     }
+        
+    public void setPageId(int id){
+         this.id = id;
+    }
+        
+    public void setPageSocre(double score){
+         this.score = score;
+    }
     @Override
     public String toString() {
-        return getPageIndex()+ ":" + getValue();
-        //return String.valueOf(getId());
+        //return getPageIndex()+ ":" + getScore();
+        return String.valueOf(getId());
     }
 }

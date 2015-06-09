@@ -28,7 +28,6 @@ import javax.swing.JTextField;
  */
 public class AnalyzeHTML {
 
-    static String pageTitle = null;
     static ArrayList<String> linkTitle = new ArrayList();
     static ArrayList<String> linkDB = new ArrayList();
 
@@ -37,19 +36,18 @@ public class AnalyzeHTML {
     int fromID;
 
     AnalyzeHTML(String url) {
-        try {
 
-            //getTitle("http://ja.wikipedia.org/wiki/%E5%9B%9E%E9%8D%8B%E8%82%89");
-            //getTitle("http://imagingrium.com/test/%E5%AD%98%E5%91%BD%E4%BA%BA%E7%89%A9.html");
-            getTitle(url);
+        //System.out.println(url);
+        String pageTitle = null;
+        try {
+            pageTitle = getTitle(url);
         } catch (Exception ex) {
             Logger.getLogger(AnalyzeHTML.class.getName()).log(Level.SEVERE, null, ex);
         }
-
         int index = pageTitle.indexOf(" - Wikipedia");
         pageTitle = new String(pageTitle.substring(0, index));
         //pageTitle = "存命人物";
-        //System.out.println(pageTitle);
+        System.out.println(pageTitle);
 
         String jdbc_url = "jdbc:mysql://localhost/LINEtest";
         String user = "root";
@@ -88,14 +86,11 @@ public class AnalyzeHTML {
 
     }
 
-    //people型が便利？いやでも向こうでつくってるからidわかったら
-    //違うはつくったのは存命人物か
-
     ArrayList<String> getLinkPageId() {
         return linkTitle;
     }
 
-    public static void getTitle(String page_url) throws Exception {
+    public static String getTitle(String page_url) throws Exception {
         //アクセスしたいページpage_url
         URL url = new URL(page_url);
         URLConnection conn = url.openConnection();
@@ -119,19 +114,16 @@ public class AnalyzeHTML {
         Matcher title_matcher = title_pattern.matcher(response.toString());
         Matcher link_matcher = link_pattern.matcher(response.toString());
 
-        if (title_matcher.find()) {
-            //System.out.println(title_matcher.group(1));
-            pageTitle = title_matcher.group(1);
-        }
         while (link_matcher.find()) {
             linkTitle.add(link_matcher.group(1).replaceAll("\\s", ""));
-            //System.out.println(link_matcher.group(1).replaceAll("\\s", ""));
-            /*
-             人１
-             人２
-             人３
-             人４
-             */
+            System.out.println(link_matcher.group(1).replaceAll("\\s", ""));
         }
+
+        String pageTitle = null;
+        if (title_matcher.find()) {
+            pageTitle = title_matcher.group(1);
+            System.out.println(pageTitle);
+        }
+        return pageTitle;
     }
 }
